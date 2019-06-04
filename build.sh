@@ -1,13 +1,19 @@
 #!/bin/bash
 
-set -e
-
-echo "Logging into $REGISTRY"
-echo "$REGISTRY_PASSWORD" | podman login -u "$REGISTRY_USER" --password-stdin "$REGISTRY"
-
 set -xe
 
-buildah bud --isolation rootless -t $REGISTRY/$REGISTRY_USER/fedora:30 --build-arg OS_VER=30 image
+source targets.cfg
 
-podman push $REGISTRY/$REGISTRY_USER/fedora:30 $REGISTRY/$REGISTRY_USER/fedora:30
+for i in $TARGETS; do
+  repo=$(echo $i|cut '-d|' -f 1)
+  tag=$(echo $i|cut '-d|' -f 2)
+  url=$(echo $i|cut '-d|' -f 3)
+  checksum=$(echo $i|cut '-d|' -f 4)
+  filename=$(basename "$url")
+  buildah bud --isolation rootless \
+              -t $REGISTRY/$REGISTRY_USER/$repo:$tag \
+              --build-arg SRC_FILE=$filename \
+              --build-arg DEST_FILE=disk.qcow2 \
+              cci
+done
 

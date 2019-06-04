@@ -11,5 +11,7 @@ install:
 script:
   - buildah --version
   - podman --version
+  - ./fetch.sh
   - ./build.sh
+  - ./push.sh
  
