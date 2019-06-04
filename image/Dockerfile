@@ -1,4 +1,4 @@
-FROM kubevirt/container-disk-v1alpha
+FROM docker.io/kubevirt/container-disk-v1alpha
 
 LABEL maintainer="The KubeVirt Project <kubevirt-dev@googlegroups.com>"
 
